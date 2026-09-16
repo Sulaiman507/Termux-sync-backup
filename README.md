@@ -1,85 +1,48 @@
-ضع هذا النص في ملف README.md داخل مستودع GitHub الخاص بنسختك الاحتياطية، أو في أي مكان تحتفظ فيه بملاحظاتك. يمكنك نسخه كما هو.
+# 📦 دليل استعادة النسخة الاحتياطية لـ Termux (termux-sync - محلي)
 
-```markdown
-# 📦 دليل استعادة النسخة الاحتياطية لـ Termux (termux-sync + GitHub)
+> هذا الدليل لنسخة احتياطية محلية محفوظة في /sdcard/termux-backups
 
-> **ملاحظة:** هذا الدليل مكتوب لنفسي في حال حذفت Termux واحتجت لاستعادة كل شيء بما فيه ملفات `hermes agent`.
-
-## 🧰 المتطلبات الأساسية
-
-1. هاتف أندرويد.
-2. تطبيق **Termux** مثبّت من **F-Droid** (تجنب نسخة Google Play).
-3. اتصال إنترنت.
-4. **رمز GitHub (Token)** واسم المستودع الذي رفعت إليه النسخة الاحتياطية.
-   - إذا نسيت الرمز، أنشئ واحدًا جديدًا من:
-     GitHub ← Settings ← Developer settings ← Personal access tokens ← Tokens (classic) ← Generate new token
-     (اختر صلاحية `repo`).
+## 🧰 المتطلبات
+1. تثبيت Termux من F-Droid.
+2. نسخة من مجلد termux-backups (انسخه من الحاسوب أو السحابة إلى /sdcard/).
 
 ## 🚀 خطوات الاستعادة
 
-### 1) تثبيت الأدوات المطلوبة
-```bash
+### 1) تثبيت الأدوات
 pkg update && pkg install python git -y
-```
 
-2) تثبيت termux-sync
-
-```bash
+### 2) تثبيت termux-sync
 curl -fsSL https://raw.githubusercontent.com/djunekz/termux-sync/main/tsctl -o tsctl
 chmod +x tsctl
 ./tsctl install
-```
 
-إذا فشل tsctl، جرّب التثبيت عبر pip:
+> إذا فشل tsctl: pip install rich && pip install termux-sync
 
-```bash
-pip install rich
-pip install termux-sync
-```
+### 3) منح صلاحية التخزين
+termux-setup-storage
+(اضغط سماح)
 
-3) إعداد termux-sync مع GitHub
-
-```bash
+### 4) إعداد termux-sync
 termux-sync setup
-```
+- اختر الخيار [1] Local storage
+- أدخل المسار: /sdcard/termux-backups
 
-· اختر الخيار 3 (GitHub).
-· أدخل رمز GitHub (Token).
-· أدخل اسم المستودع بالصيغة: اسم_المستخدم/اسم_المستودع.
-
-4) استعادة النسخة الاحتياطية
-
-```bash
+### 5) استعادة النسخة
 termux-sync restore
-```
+- اختر النسخة المطلوبة من القائمة
+- ستتحقق الأداة من السلامة ثم تستعيد كل شيء
 
-· ستظهر قائمة بالنسخ المتاحة، اختر النسخة التي تريدها.
-· ستتحقق الأداة تلقائيًا من سلامة النسخة (SHA-256) قبل الاستخراج.
-· سيتم استخراج جميع الملفات (بما فيها home وملفات hermes agent) وإعادة تثبيت الحزم.
+### 6) بعد الاستعادة
+أغلق Termux تمامًا ثم افتحه من جديد.
 
-5) بعد الاستعادة
+## ⚠️ ملاحظات مهمة
+- لا تحذف مجلد termux-backups أبدًا.
+- احتفظ بنسخة منه على الحاسوب أو Google Drive.
+- إذا انقطعت الاستعادة، أعد تشغيل: termux-sync restore
+- للتحقق من النسخ: termux-sync list
+- استعادة نسخة معينة: termux-sync restore --name اسم_النسخة
 
-أغلق Termux تمامًا (من الإشعار: Exit) ثم افتحه من جديد.
-
-⚠️ ملاحظات مهمة
-
-· إذا كان المستودع خاصًا (Private): قد يظهر خطأ HTTP 404 Not Found. الحل: حوّل المستودع مؤقتًا إلى Public، ثم أعد المحاولة، وبعد الانتهاء أعد تحويله إلى Private فورًا.
-· إذا انقطعت عملية الاستعادة: أعد تشغيل الأمر termux-sync restore مرة أخرى.
-· لا تخزّن النسخة الاحتياطية داخل مجلدات Termux الخاصة (مثل /data/data/com.termux)، لأنها تُحذف مع مسح بيانات التطبيق.
-· للتحقق من النسخ المتاحة: يمكنك استخدام termux-sync list.
-· لاستعادة نسخة معينة بالاسم: termux-sync restore --name اسم_النسخة.
-
-🧠 تذكير سريع
-
-· الأمر الأساسي للاستعادة: termux-sync restore
-· أمر الإعداد (أول مرة فقط): termux-sync setup
-· إذا نسيت الرمز: أنشئ واحدًا جديدًا بصلاحية repo.
-· ملفات hermes agent موجودة في ~/.hermes وستُستعاد تلقائيًا مع مجلد home.
-
----
-
-آخر تحديث: (اكتب التاريخ هنا)
-
-```
-
-يمكنك تعديل التاريخ أو إضافة أي تفاصيل خاصة بك. هذا النص كافٍ لتذكيرك بالخطوات كاملة إذا احت جت لاستعادة النسخة لاحقًا.
+## 🧠 تذكير سريع
+- أمر الاستعادة: termux-sync restore
+- أمر الإعداد: termux-sync setup (محلي → /sdcard/termux-backups)
+- ملفات hermes agent في ~/.hermes وستُستعاد تلقائيًا.
